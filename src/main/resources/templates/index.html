@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление заявками</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+</head>
+<body>
+<div class="container">
+    <h1>🎓 Управление заявками на курсы</h1>
+
+    <div class="header-actions">
+        <a href="/requests/new" class="btn btn-primary">➕ Создать новую заявку</a>
+        <a href="/courses" class="btn btn-primary">📚 Список курсов</a>
+        <a href="/operators" class="btn btn-primary">👥 Список операторов</a>
+    </div>
+
+    <div th:if="${requests.isEmpty()}" class="empty-message">
+        📝 Заявок пока нет. Создайте первую!
+    </div>
+
+    <table th:if="${!requests.isEmpty()}">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Имя клиента</th>
+            <th>Телефон</th>
+            <th>Курс</th>
+            <th>Цена</th>
+            <th>Статус</th>
+            <th>Операторы</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="request : ${requests}">
+            <td th:text="${request.id}"></td>
+            <td th:text="${request.userName}"></td>
+            <td th:text="${request.phone}"></td>
+            <td th:text="${request.course.name}"></td>
+            <td th:text="${request.course.price + ' ₸'}"></td>
+            <td>
+                <span th:if="${request.handled}" class="status-badge status-handled">✅ Обработана</span>
+                <span th:unless="${request.handled}" class="status-badge status-pending">⏳ В ожидании</span>
+            </td>
+            <td>
+                <span th:if="${request.operators.isEmpty()}">-</span>
+                <span th:unless="${request.operators.isEmpty()}" th:text="${request.operators.size() + ' оператор(ов)'}"></span>
+            </td>
+            <td class="actions">
+                <a th:href="@{'/requests/' + ${request.id}}" class="btn btn-success">👁️ Детали</a>
+                <a th:if="${!request.handled}" th:href="@{'/requests/' + ${request.id} + '/assign'}" class="btn btn-primary">✏️ Назначить</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

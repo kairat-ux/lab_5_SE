@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Детали заявки</title>
+    <link rel="stylesheet" th:href="@{/css/request-details.css}">
+</head>
+<body>
+<div class="container">
+    <h1>📋 Детали заявки №<span th:text="${request.id}"></span></h1>
+
+    <div class="info-section">
+        <div class="info-row">
+            <div class="info-label">Клиент:</div>
+            <div class="info-value" th:text="${request.userName}"></div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">Телефон:</div>
+            <div class="info-value" th:text="${request.phone}"></div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">Курс:</div>
+            <div class="info-value" th:text="${request.course.name}"></div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">Цена курса:</div>
+            <div class="info-value" th:text="${request.course.price + ' ₸'}"></div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">Комментарий:</div>
+            <div class="info-value" th:text="${request.commentary != null ? request.commentary : '-'}"></div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">Статус:</div>
+            <div class="info-value">
+                <span th:if="${request.handled}" class="status-badge status-handled">✅ Обработана</span>
+                <span th:unless="${request.handled}" class="status-badge status-pending">⏳ В ожидании</span>
+            </div>
+        </div>
+    </div>
+
+    <h2>👥 Назначенные операторы</h2>
+
+    <div class="operators-list">
+        <div th:if="${request.operators.isEmpty()}" class="empty-message">
+            Операторы еще не назначены
+        </div>
+
+        <div th:each="operator : ${request.operators}" class="operator-item">
+            <div class="operator-info-detail">
+                <div class="operator-name-detail"
+                     th:text="${operator.name + ' ' + operator.surname}"></div>
+                <div class="operator-dept-detail"
+                     th:text="${'Отдел: ' + operator.department}"></div>
+            </div>
+            <form th:action="@{'/requests/' + ${request.id} + '/remove-operator/' + ${operator.id}}"
+                  method="post" style="display: inline;">
+                <button type="submit" class="btn btn-danger"
+                        onclick="return confirm('Удалить этого оператора?')">
+                    🗑️ Удалить
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="back-btn">
+        <a href="/" class="btn btn-primary">⬅️ Вернуться к списку заявок</a>
+    </div>
+</div>
+</body>
+</html>

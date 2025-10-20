@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список курсов</title>
+    <link rel="stylesheet" th:href="@{/css/courses.css}">
+</head>
+<body>
+<div class="container">
+    <h1>📚 Доступные курсы</h1>
+
+    <div class="courses-grid">
+        <div class="course-card" th:each="course : ${courses}">
+            <div class="course-name" th:text="${course.name}"></div>
+            <div class="course-description" th:text="${course.description}"></div>
+            <div class="course-price" th:text="${course.price + ' ₸'}"></div>
+        </div>
+    </div>
+
+    <div class="back-btn">
+        <a href="/" class="btn">⬅️ Вернуться на главную</a>
+    </div>
+</div>
+</body>
+</html>
