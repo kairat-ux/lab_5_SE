@@ -2,24 +2,24 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.Course;
 import com.example.demo.service.CourseService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/courses")
-@RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class CourseController {
 
-    private final CourseService courseService;
+    @Autowired
+    private CourseService courseService;
 
     @GetMapping
     public ResponseEntity<List<Course>> getAllCourses() {
-        return ResponseEntity.ok(courseService.getAllCourses());
+        List<Course> courses = courseService.getAllCourses();
+        return ResponseEntity.ok(courses);
     }
 
     @GetMapping("/{id}")
@@ -31,24 +31,30 @@ public class CourseController {
 
     @PostMapping
     public ResponseEntity<Course> createCourse(@RequestBody Course course) {
-        Course createdCourse = courseService.createCourse(course);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdCourse);
+        Course created = courseService.createCourse(course);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Course> updateCourse(@PathVariable Long id,
-                                               @RequestBody Course course) {
+    public ResponseEntity<Course> updateCourse(
+            @PathVariable Long id,
+            @RequestBody Course course) {
         try {
-            Course updatedCourse = courseService.updateCourse(id, course);
-            return ResponseEntity.ok(updatedCourse);
+            Course updated = courseService.updateCourse(id, course);
+            return ResponseEntity.ok(updated);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCourse(@PathVariable Long id) {
-        courseService.deleteCourse(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<String> deleteCourse(@PathVariable Long id) {
+        try {
+            courseService.deleteCourse(id);
+            return ResponseEntity.ok("Course deleted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error deleting course");
+        }
     }
 }

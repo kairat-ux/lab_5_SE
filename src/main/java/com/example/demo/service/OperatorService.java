@@ -2,17 +2,18 @@ package com.example.demo.service;
 
 import com.example.demo.entity.Operator;
 import com.example.demo.repository.OperatorRepository;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
+@Transactional
 public class OperatorService {
 
-    private final OperatorRepository operatorRepository;
+    @Autowired
+    private OperatorRepository operatorRepository;
 
     public List<Operator> getAllOperators() {
         return operatorRepository.findAll();
@@ -22,26 +23,27 @@ public class OperatorService {
         return operatorRepository.findById(id);
     }
 
-    public List<Operator> getOperatorsByDepartment(String department) {
-        return operatorRepository.findByDepartment(department);
-    }
-
     public Operator createOperator(Operator operator) {
         return operatorRepository.save(operator);
     }
 
-    public Operator updateOperator(Long id, Operator operatorDetails) {
+    public Operator updateOperator(Long id, Operator updatedOperator) {
         Operator operator = operatorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Operator not found"));
 
-        operator.setName(operatorDetails.getName());
-        operator.setSurname(operatorDetails.getSurname());
-        operator.setDepartment(operatorDetails.getDepartment());
+        operator.setName(updatedOperator.getName());
+        operator.setEmail(updatedOperator.getEmail());
+        operator.setPhone(updatedOperator.getPhone());
+        operator.setActive(updatedOperator.getActive());
 
         return operatorRepository.save(operator);
     }
 
     public void deleteOperator(Long id) {
         operatorRepository.deleteById(id);
+    }
+
+    public List<Operator> getActiveOperators() {
+        return operatorRepository.findByActive(true);
     }
 }

@@ -1,76 +1,36 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.List;
 
 @Entity
 @Table(name = "operators")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Operator {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(nullable = false)
-    private String surname;
+    @Column(unique = true, length = 100)
+    private String email;
 
-    @Column(nullable = false)
-    private String department;
+    @Column(length = 20)
+    private String phone;
 
-    @ManyToMany(mappedBy = "operators")
-    private Set<ApplicationRequest> requests = new HashSet<>();
+    @Column
+    private Boolean active = true;
 
-    public Operator() {
-    }
-
-    public Operator(Long id, String name, String surname, String department) {
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.department = department;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public String getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(String department) {
-        this.department = department;
-    }
-
-    public Set<ApplicationRequest> getRequests() {
-        return requests;
-    }
-
-    public void setRequests(Set<ApplicationRequest> requests) {
-        this.requests = requests;
-    }
+    @OneToMany(mappedBy = "operator")
+    @JsonIgnore
+    private List<ApplicationRequest> assignedRequests;
 }

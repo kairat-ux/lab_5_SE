@@ -2,17 +2,18 @@ package com.example.demo.service;
 
 import com.example.demo.entity.Course;
 import com.example.demo.repository.CourseRepository;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
+@Transactional
 public class CourseService {
 
-    private final CourseRepository courseRepository;
+    @Autowired
+    private CourseRepository courseRepository;
 
     public List<Course> getAllCourses() {
         return courseRepository.findAll();
@@ -26,13 +27,14 @@ public class CourseService {
         return courseRepository.save(course);
     }
 
-    public Course updateCourse(Long id, Course courseDetails) {
+    public Course updateCourse(Long id, Course updatedCourse) {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Course not found"));
 
-        course.setName(courseDetails.getName());
-        course.setDescription(courseDetails.getDescription());
-        course.setPrice(courseDetails.getPrice());
+        course.setName(updatedCourse.getName());
+        course.setDescription(updatedCourse.getDescription());
+        course.setDurationMonths(updatedCourse.getDurationMonths());
+        course.setPrice(updatedCourse.getPrice());
 
         return courseRepository.save(course);
     }
